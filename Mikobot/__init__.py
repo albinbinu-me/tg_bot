@@ -182,10 +182,7 @@ function = dispatcher.add_handler
 
 # <================================================ BOOT MESSAGE=======================================================>
 ALIVE_MSG = """
-💫 *MY SYSTEM IS STARTING, PLEASE WAIT FOR SOMETIME TO COMPLETE BOOT!*
-
-
-*IF COMMANDS DON'T WORK CHECK THE LOGS*
+im Running
 """
 
 ALIVE_IMG = [
