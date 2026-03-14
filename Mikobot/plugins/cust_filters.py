@@ -492,7 +492,7 @@ async def reply_filter(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                 message_thread_id=(
                                     message.message_thread_id if chat.is_forum else None
                                 ),
-                                has_spoiler=filters.HAS_MEDIA_SPOILER,
+                                has_spoiler=getattr(filt, "has_media_spoiler", False)
                             )
                     except BadRequest:
                         await send_message(
