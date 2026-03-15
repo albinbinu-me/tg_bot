@@ -78,37 +78,13 @@ def paginate_modules(page_n: int, module_dict: Dict, prefix, chat=None) -> List:
             ]
         )
 
-    pairs = [modules[i * 3 : (i + 1) * 3] for i in range((len(modules) + 3 - 1) // 3)]
+    # 3 buttons per row
+    pairs = [modules[i:i + 3] for i in range(0, len(modules), 3)]
 
-    round_num = len(modules) / 3
-    calc = len(modules) - round(round_num)
-    if calc in [1, 2]:
-        pairs.append((modules[-1],))
-
-    max_num_pages = ceil(len(pairs) / 6)
-    modulo_page = page_n % max_num_pages
-
-    # can only have a certain amount of buttons side by side
-    if len(pairs) > 3:
-        pairs = pairs[modulo_page * 6 : 6 * (modulo_page + 1)] + [
-            (
-                EqInlineKeyboardButton(
-                    "◁", callback_data="{}_prev({})".format(prefix, modulo_page)
-                ),
-                EqInlineKeyboardButton(
-                    "» 𝘽𝘼𝘾𝙆 «", callback_data="extra_command_handler"
-                ),
-                EqInlineKeyboardButton(
-                    "▷", callback_data="{}_next({})".format(prefix, modulo_page)
-                ),
-            )
-        ]
-
-    else:
-        pairs += [[EqInlineKeyboardButton("⇦ 𝘽𝘼𝘾𝙆", callback_data="Miko_back")]]
+    # Add BACK button at bottom
+    pairs.append([EqInlineKeyboardButton("Back", callback_data="Miko_back")])
 
     return pairs
-
 
 def article(
     title: str = "",
