@@ -182,18 +182,17 @@ function = dispatcher.add_handler
 
 # <================================================ BOOT MESSAGE=======================================================>
 ALIVE_MSG = """
-im Running
-"""
+<b>🚀 {} Started Successfully!</b>
 
-ALIVE_IMG = [
-    "https://telegra.ph/file/40b93b46642124605e678.jpg",
-    "https://telegra.ph/file/01a2e0cd1b9d03808c546.jpg",
-    "https://telegra.ph/file/ed4385c26dcf6de70543f.jpg",
-    "https://telegra.ph/file/33a8d97739a2a4f81ddde.jpg",
-    "https://telegra.ph/file/cce9038f6a9b88eb409b5.jpg",
-    "https://telegra.ph/file/262c86393730a609cdade.jpg",
-    "https://telegra.ph/file/33a8d97739a2a4f81ddde.jpg",
-]
+<b>⚡ Ping:</b> <code>{}</code>
+
+<b>Python:</b> <code>{}</code>
+<b>PTB:</b> <code>{}</code>
+<b>Pyrogram:</b> <code>{}</code>
+<b>Telethon:</b> <code>{}</code>
+
+<b>Modules Loaded:</b> <code>{}</code>
+"""
 # <=======================================================================================================>
 
 
@@ -202,19 +201,47 @@ async def send_booting_message():
     bot = dispatcher.bot
 
     try:
-        await bot.send_photo(
+        from Mikobot.plugins import ALL_MODULES
+        from platform import python_version
+        import telegram
+        import pyrogram
+        import telethon
+
+        start_time = time.time()
+
+        msg = await bot.send_message(
             chat_id=SUPPORT_ID,
-            photo=str(choice(ALIVE_IMG)),
-            caption=ALIVE_MSG,
-            parse_mode=ParseMode.MARKDOWN,
+            text="Booting...",
         )
+
+        end_time = time.time()
+        ping = f"{round((end_time - start_time) * 1000, 3)} ms"
+
+        # uptime = int(time.time() - StartTime)
+        # hours, remainder = divmod(uptime, 3600)
+        # minutes, seconds = divmod(remainder, 60)
+        # uptime_str = f"{hours}h {minutes}m {seconds}s"
+
+        caption = ALIVE_MSG.format(
+            bot.first_name,
+            ping,
+            python_version(),
+            telegram.__version__,
+            pyrogram.__version__,
+            telethon.__version__,
+            len(ALL_MODULES),
+        )
+
+        await msg.edit_text(
+            caption,
+            parse_mode=ParseMode.HTML,
+        )
+
     except Exception as e:
         LOGGER.warning(
             "[ERROR] - Bot isn't able to send a message to the support_chat!"
         )
         print(e)
-
-
 # <=======================================================================================================>
 
 
