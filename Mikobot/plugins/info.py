@@ -1,4 +1,4 @@
-# <============================================== IMPORTS =========================================================>
+
 import os
 import re
 from html import escape
@@ -16,13 +16,12 @@ from telegram.ext import CommandHandler, ContextTypes
 from telegram.helpers import mention_html
 
 from Database.sql.approve_sql import is_approved
-from Infamous.karma import START_IMG
-from Mikobot import DEV_USERS, DRAGONS, INFOPIC, OWNER_ID, function
+
+from Mikobot import DEV_USERS, DRAGONS, INFOPIC, OWNER_ID, function,BOT_NAME
 from Mikobot.__main__ import STATS, USER_INFO
 from Mikobot.plugins.helper_funcs.chat_status import support_plus
 from Mikobot.plugins.users import get_user_id
 
-# <=======================================================================================================>
 
 
 # <================================================ FUNCTION =======================================================>
@@ -85,45 +84,45 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if chat_obj.type == ChatType.PRIVATE:
         if chat_obj.username:
-            head = f"⇨【 <b>USER INFORMATION</b> 】⇦\n\n"
+            head = f"<b>USER INFORMATION</b> 】⇦\n\n"
             if chat_obj.username.endswith("bot"):
-                head = f"⇨【 <b>BOT INFORMATION</b> 】⇦\n\n"
+                head = f"⇨<b>BOT INFORMATION</b> 】⇦\n\n"
 
-        head += f"➲ <b>ID:</b> <code>{chat_obj.id}</code>"
-        head += f"\n➲ <b>First Name:</b> {chat_obj.first_name}"
+        head += f"<b>ID:</b> <code>{chat_obj.id}</code>"
+        head += f"\n<b>First Name:</b> {chat_obj.first_name}"
         if chat_obj.last_name:
-            head += f"\n➲ <b>Last Name:</b> {chat_obj.last_name}"
+            head += f"\n<b>Last Name:</b> {chat_obj.last_name}"
         if chat_obj.username:
-            head += f"\n➲ <b>Username:</b> @{chat_obj.username}"
+            head += f"\n<b>Username:</b> @{chat_obj.username}"
         head += f"\n➲ <b>Permalink:</b> {mention_html(chat_obj.id, 'link')}"
 
         if chat_obj.username and not chat_obj.username.endswith("bot"):
-            head += f"\n\n💎 <b>Premium User:</b> {premium}"
+            head += f"\n\n<b>Premium User:</b> {premium}"
 
         if chat_obj.bio:
-            head += f"\n\n<b>➲ Bio:</b> {chat_obj.bio}"
+            head += f"\n\n<b>Bio:</b> {chat_obj.bio}"
 
         chat_member = await chat.get_member(chat_obj.id)
         if isinstance(chat_member, ChatMemberAdministrator):
-            head += f"\n➲ <b>Presence:</b> {chat_member.status}"
+            head += f"\n<b>Presence:</b> {chat_member.status}"
             if chat_member.custom_title:
-                head += f"\n➲ <b>Admin Title:</b> {chat_member.custom_title}"
+                head += f"\n<b>Admin Title:</b> {chat_member.custom_title}"
         else:
-            head += f"\n➲ <b>Presence:</b> {chat_member.status}"
+            head += f"\n<b>Presence:</b> {chat_member.status}"
 
         if is_approved(chat.id, chat_obj.id):
-            head += f"\n➲ <b>Approved:</b> This user is approved in this chat."
+            head += f"\n<b>Approved:</b> This user is approved in this chat."
 
         disaster_level_present = False
 
         if chat_obj.id == OWNER_ID:
-            head += "\n\n👑 <b>The disaster level of this person is My Owner.</b>"
+            head += "\n\n<b>The disaster level of this person is My Owner.</b>"
             disaster_level_present = True
         elif chat_obj.id in DEV_USERS:
-            head += "\n\n🐉 <b>This user is a member of Infamous Hydra.</b>"
+            head += "\n\n<b>This user is a member of Infamous Hydra.</b>"
             disaster_level_present = True
         elif chat_obj.id in DRAGONS:
-            head += "\n\n🐲 <b>The disaster level of this person is Dragon.</b>"
+            head += "\n\n<b>The disaster level of this person is Dragon.</b>"
             disaster_level_present = True
         if disaster_level_present:
             head += " [?]"
@@ -141,12 +140,12 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await reply_with_text("Found sender chat, getting information...")
         head += f"<b>ID:</b> <code>{chat_obj.id}</code>"
         if chat_obj.title:
-            head += f"\n🏷️ <b>Title:</b> {chat_obj.title}"
+            head += f"\n<b>Title:</b> {chat_obj.title}"
         if chat_obj.username:
-            head += f"\n📧 <b>Username:</b> @{chat_obj.username}"
+            head += f"\n<b>Username:</b> @{chat_obj.username}"
         head += f"\n🔗 Permalink: {mention_html(chat_obj.id, 'link')}"
         if chat_obj.description:
-            head += f"\n📝 <b>Description:</b> {chat_obj.description}"
+            head += f"\n<b>Description:</b> {chat_obj.description}"
 
     elif chat_obj.type == ChatType.CHANNEL:
         head = f"Channel Information:\n"
@@ -194,26 +193,14 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 @support_plus
 async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    stats = "📊 <b>Yae Miko Bot's Statistics:</b>\n\n" + "\n".join(
+    stats = f"<b>{BOT_NAME} Statistics:</b>\n\n" + "\n".join(
         [mod.__stats__() for mod in STATS]
     )
     result = re.sub(r"(\d+)", r"<code>\1</code>", stats)
 
-    keyboard = [
-        [
-            InlineKeyboardButton(
-                "㊋ Infamous • Hydra", url="https://t.me/Infamous_Hydra"
-            ),
-        ]
-    ]
-
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    await update.effective_message.reply_photo(
-        photo=str(choice(START_IMG)),
-        caption=result,
+    await update.effective_message.reply_text(
+        text=result,
         parse_mode=ParseMode.HTML,
-        reply_markup=reply_markup,
     )
 
 
