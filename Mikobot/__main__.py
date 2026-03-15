@@ -447,7 +447,7 @@ async def get_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
             module = find_command_module(query)
 
         if module:
-            text = f"*Help for {module.__mod_name__}*\n\n{module.__help__}"
+            text = f"Help for {module.__mod_name__}*\n\n{module.__help__}"
 
             await send_help(
                 chat.id,
